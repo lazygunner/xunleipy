@@ -1,5 +1,4 @@
 from time import time
-from urllib2 import quote
 
 import requests
 
