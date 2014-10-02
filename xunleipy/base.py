@@ -1,11 +1,15 @@
+from __future__ import absolute_import, unicode_literals
 from time import time
 
 import requests
 
 from .utils import get_password_hash
 
-DEFAULT_USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:32.0) Gecko/20100101 Firefox/32.0'
+
+DEFAULT_USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:32.0)\
+    Gecko/20100101 Firefox/32.0'
 DEFAULT_REFERER = 'http://i.vod.xunlei.com/resource_assistant'
+
 
 class XunLei(object):
 
@@ -33,12 +37,12 @@ class XunLei(object):
         check_url = 'http://login.xunlei.com/check?u=%s&cachetime=%d'
         login_url = 'http://login.xunlei.com/sec2login/'
 
-        #get verify_code from check url
+        # get verify_code from check url
         cache_time = self._current_timestamp()
         check_url = check_url % (self.username, cache_time)
         r = self.session.get(check_url)
 
-        #check_result is like '0:!kuv', but we auctually only need '!kuv'
+        # check_result is like '0:!kuv', but we auctually only need '!kuv'
         verify_code_tmp = r.cookies.get('check_result', '').split(':')
         if len(verify_code_tmp) == 2 and verify_code_tmp[0] == '0':
             verify_code = verify_code_tmp[1]
@@ -57,12 +61,11 @@ class XunLei(object):
 
         user_id = r.cookies.get('userid')
         if user_id:
-            #login success
+            # login success
             self.user_id = user_id
             self.is_login = True
         else:
-            #login failed
+            # login failed
             pass
 
         return self.is_login
-

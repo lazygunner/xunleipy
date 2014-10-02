@@ -2,7 +2,7 @@ import unittest
 
 from httmock import urlmatch, HTTMock, response
 
-from xunleipy.client import XunLei
+from xunleipy.base import XunLei
 
 @urlmatch(netloc=r'(.*\.)?xunlei\.com')
 def xunlei_mock(url, request):
