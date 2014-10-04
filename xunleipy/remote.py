@@ -38,13 +38,13 @@ class XunLeiRemote(XunLei):
             data = data.encode('utf-8')
             kwargs['data'] = data
 
-        res = self.session.request(
+        result = self.session.request(
             method=method,
             url=url,
             **kwargs
             )
-        res.raise_for_status()
-        data = res.json()
+        result.raise_for_status()
+        data = result.json()
 
         if data['rtn'] != 0:
             print('request for %s failed, code:%s', url, data['rtn'])
