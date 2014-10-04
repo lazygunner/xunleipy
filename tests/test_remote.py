@@ -31,6 +31,14 @@ def xunlei_mock(url, request):
                 'id': 1
             }]
         }
+    elif url.path == '/del':
+        content = {
+            'rtn': 0,
+            'tasks': [
+                {'msg': '', 'id': '50', 'result': 0},
+                {'msg': '', 'id': '51', 'result': 0}
+            ]
+        }
 
     return response(200, content, headers, None, 5, request)
 
@@ -57,6 +65,34 @@ class LoginTest(unittest.TestCase):
             data = res
             self.assertEqual(data['rtn'], 0)
             self.assertTrue('taskid' in data['tasks'][0])
+
+
+class DeleteTestCase(unittest.TestCase):
+
+    def test_delete_tasks_by_task_infos(self):
+        with HTTMock(xunlei_mock):
+            u = 'testname'
+            p = 'testpass'
+            xlr = XunLeiRemote(u, p)
+            res = xlr.delete_tasks_by_task_infos(xlr.pid, [])
+
+            for data in res:
+                self.assertTrue('result' in data)
+                self.assertEqual(data['result'], 0)
+
+    def test_delete_all_tasks_in_recycle(self):
+        with HTTMock(xunlei_mock):
+            u = 'testname'
+            p = 'testpass'
+            xlr = XunLeiRemote(u, p)
+            res = xlr.delete_all_tasks_in_recycle(xlr.pid)
+
+            self.assertEqual(res['rtn'], 0)
+            self.assertTrue('tasks' in res)
+
+            for data in res['tasks']:
+                self.assertTrue('result' in data)
+                self.assertEqual(data['result'], 0)
 
 
 if __name__ == '__main__':

@@ -24,6 +24,7 @@ class XunLeiRemote(XunLei):
         super(XunLeiRemote, self).__init__(username, password)
         if not self.is_login:
             self.login()
+        self.pid = ''
 
     def _request(self, method, url, **kwargs):
         url = REMOTE_BASE_URL + url
@@ -43,7 +44,6 @@ class XunLeiRemote(XunLei):
             **kwargs
             )
         res.raise_for_status()
-
         data = res.json()
 
         if data['rtn'] != 0:
@@ -96,6 +96,14 @@ class XunLeiRemote(XunLei):
         }
         res = self._get('listPeer', params=params)
         return res['peerList']
+
+    def get_default_task_list(self):
+        peer_list = self.get_remote_peer_list()
+        if len(peer_list) == 0:
+            return []
+        default_peer = peer_list[0]
+        self.pid = default_peer['pid']
+        return self.get_remote_task_list(self.pid)
 
     def get_remote_task_list(
             self, peer_id, list_type=ListType.downloading, pos=0, number=10):
@@ -257,5 +265,38 @@ class XunLeiRemote(XunLei):
             data=data,
             headers=headers
         )
+
+        return res
+
+    def delete_tasks_by_task_infos(self, pid, task_infos, recycle=True,
+                                   del_file=True):
+
+        if len(task_infos) == 0:
+            return []
+
+        del_tasks = []
+        for t in task_infos:
+            del_tasks.append(t['id'] + '_' + str(t['state']))
+        del_tasks_string = ','.join(del_tasks)
+        params = {
+            'pid': pid,
+            'tasks': del_tasks_string,
+            'recycleTask': 1 if recycle else 0,
+            'deleteFile': 'true' if del_file else 'false'
+        }
+
+        res = self._get('del', params=params)
+
+        return res
+
+    def delete_all_tasks_in_recycle(self, pid):
+        params = {
+            'pid': pid,
+            'tasks': '-1_64',
+            'recycleTask': 0,
+            'deleteFile': 'true'
+        }
+
+        res = self._get('del', params=params)
 
         return res
