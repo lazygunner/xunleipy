@@ -32,7 +32,6 @@ class XunLeiVod(XunLei):
             **kwargs
             )
         result.raise_for_status()
-        import pdb;pdb.set_trace()
         data = result.json()
 
         if 'resp' in data:
