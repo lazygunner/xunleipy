@@ -1,5 +1,5 @@
 from __future__ import absolute_import, unicode_literals
-from time import time
+from time import time, sleep
 
 import requests
 
@@ -34,26 +34,33 @@ class XunLei(object):
         return int(time() * 1000)
 
     def login(self):
-        check_url = 'http://login.xunlei.com/check?u=%s&cachetime=%d'
         login_url = 'http://login.xunlei.com/sec2login/'
 
-        # get verify_code from check url
-        cache_time = self._current_timestamp()
-        check_url = check_url % (self.username, cache_time)
-        r = self.session.get(check_url)
+        username = self.username
+        try_time = 0
+        while try_time < 3:
+            check_url = 'http://login.xunlei.com/check?u=%s&cachetime=%d'
+            # get verify_code from check url
+            cache_time = self._current_timestamp()
+            check_url = check_url % (username, cache_time)
+            r = self.session.get(check_url)
 
-        # check_result is like '0:!kuv', but we auctually only need '!kuv'
-        verify_code_tmp = r.cookies.get('check_result', '').split(':')
-        if len(verify_code_tmp) == 2 and verify_code_tmp[0] == '0':
-            verify_code = verify_code_tmp[1]
-        else:
-            verify_code = None
+            # check_result is like '0:!kuv', but we auctually only need '!kuv'
+            verify_code_tmp = r.cookies.get('check_result', '').split(':')
+            if len(verify_code_tmp) == 2 and verify_code_tmp[0] == '0':
+                verify_code = verify_code_tmp[1]
+                break
+            else:
+                print 'verify_code:', r.cookies.get('check_result', '')
+                verify_code = ''
+                try_time += 1
+                sleep(10)
 
         password_hash = get_password_hash(self.password, verify_code)
         data = {
             'login_enable': 1,
             'login_hour': 720,
-            'u': self.username,
+            'u': username,
             'p': password_hash,
             'verifycode': verify_code
         }
@@ -66,6 +73,7 @@ class XunLei(object):
             self.is_login = True
         else:
             # login failed
+            print 'login failed'
             pass
 
         return self.is_login
