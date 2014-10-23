@@ -51,7 +51,7 @@ class XunLei(object):
                 verify_code = verify_code_tmp[1]
                 break
             else:
-                print 'verify_code:', r.cookies.get('check_result', '')
+                print ('verify_code:', r.cookies.get('check_result', ''))
                 verify_code = ''
                 try_time += 1
                 sleep(10)
@@ -73,7 +73,7 @@ class XunLei(object):
             self.is_login = True
         else:
             # login failed
-            print 'login failed'
+            print ('login failed')
             pass
 
         return self.is_login
