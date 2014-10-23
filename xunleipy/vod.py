@@ -37,8 +37,9 @@ class XunLeiVod(XunLei):
         if 'resp' in data:
             data = data['resp']
         if data['ret'] != 0:
+            print data
             print('request for %s failed, code:%s, msg:%s',
-                  url, data['ret'], data['msg'])
+                  url, data['ret'], data.get('msg', ''))
 
         return data
 
