@@ -2,6 +2,7 @@ import unittest
 import json
 
 from httmock import urlmatch, HTTMock, response
+from six.moves.urllib.parse import unquote
 
 from xunleipy.remote import XunLeiRemote
 
@@ -20,16 +21,22 @@ def xunlei_mock(url, request):
             'Set-Cookie': 'userid=test1234;'
         }
     elif url.path == '/createTask':
-        content = {
-            'rtn': 0,
-            'tasks': [{
-                'name': '',
-                'url': '',
+        body = request.body
+        body = unquote(body)[5:]
+        task_list = json.loads(body)['tasks']
+        tasks = []
+        for task in task_list:
+            tasks.append({
+                'name': task['name'],
+                'url': task['url'],
                 'taskid': 1,
                 'result': 0,
                 'msg': '',
                 'id': 1
-            }]
+            })
+        content = {
+            'rtn': 0,
+            'tasks': tasks
         }
     elif url.path == '/del':
         content = {
@@ -65,6 +72,27 @@ class LoginTest(unittest.TestCase):
             data = res
             self.assertEqual(data['rtn'], 0)
             self.assertTrue('taskid' in data['tasks'][0])
+
+    def test_create_tasks_by_urls_success(self):
+        with HTTMock(xunlei_mock):
+            u = 'testname'
+            p = 'testpass'
+            xlr = XunLeiRemote(u, p)
+            url_list = [
+                    u'ed2k://|file|=cu6wpmujve4rbsv4xdqd2r5ogkmgksgo|1234|as/',
+                    u'movietrailers.apple.com/movies/wb/prisoners/prisoners-tlr1_h720p.mov'  # NOQA
+                ]
+
+            res = xlr.add_urls_to_remote(
+                "8498352EB4F5208X0001",
+                url_list=url_list
+            )
+
+            data = res
+            self.assertEqual(data['rtn'], 0)
+            self.assertTrue('taskid' in data['tasks'][0])
+            for task in data['tasks']:
+                self.assertTrue(task['url'] in url_list)
 
 
 class DeleteTestCase(unittest.TestCase):

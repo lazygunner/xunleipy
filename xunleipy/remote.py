@@ -1,14 +1,18 @@
 # -*- encoding:utf-8 -*-
 from __future__ import absolute_import, unicode_literals
 import json
+import logging
 
 from six.moves.urllib.parse import quote
 
 from .base import XunLei
+from .utils import resolve_url
 
 REMOTE_BASE_URL = 'http://homecloud.yuancheng.xunlei.com/'
 DEFAULT_V = 2
 DEFAULT_CT = 0
+
+logger = logging.getLogger(__name__)
 
 
 class ListType:
@@ -208,6 +212,17 @@ class XunLeiRemote(XunLei):
                 )
 
         return task_list
+
+    def add_urls_to_remote(self, pid, path='C:/TDDOWNLOADi/', url_list=[]):
+        task_list = []
+        for url in url_list:
+            task = resolve_url(url)
+            if task == {}:
+                logger.info('Invalid URL:%s', url)
+                continue
+            else:
+                task_list.append(task)
+        return self.add_tasks_to_remote(pid, path, task_list)
 
     def add_tasks_to_remote(self, pid, path='C:/TDDOWNLOAD/', task_list=[]):
         '''
