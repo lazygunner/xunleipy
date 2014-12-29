@@ -79,8 +79,8 @@ class LoginTest(unittest.TestCase):
             p = 'testpass'
             xlr = XunLeiRemote(u, p)
             url_list = [
-                    u'ed2k://|file|=cu6wpmujve4rbsv4xdqd2r5ogkmgksgo|1234|as/',
-                    u'movietrailers.apple.com/movies/wb/prisoners/prisoners-tlr1_h720p.mov'  # NOQA
+                    'ed2k://|file|=cu6wpmujve4rbsv4xdqd2r5ogkmgksgo|1234|as/',
+                    'movietrailers.apple.com/movies/wb/prisoners/prisoners-tlr1_h720p.mov'  # NOQA
                 ]
 
             res = xlr.add_urls_to_remote(
