@@ -213,7 +213,7 @@ class XunLeiRemote(XunLei):
 
         return task_list
 
-    def add_urls_to_remote(self, pid, path='C:/TDDOWNLOADi/', url_list=[]):
+    def add_urls_to_remote(self, pid, path='C:/TDDOWNLOAD/', url_list=[]):
         task_list = []
         for url in url_list:
             task = resolve_url(url)

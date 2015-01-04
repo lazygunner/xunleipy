@@ -56,3 +56,6 @@ docs/_build/
 
 # PyCharm
 .idea/
+
+# config file
+config.json
