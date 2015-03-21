@@ -14,7 +14,7 @@ with open('requirements.txt') as f:
 
 setup(
     name='xunleipy',
-    version='0.1.7',
+    version='0.1.8',
     author='lazygunner',
     author_email='gymgunner@gmail.com',
     url='https://github.com/lazygunner/xunleipy',
