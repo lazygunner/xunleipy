@@ -4,6 +4,7 @@ from time import time, sleep
 import requests
 
 from .utils import get_password_hash
+from .rk import RClient
 
 
 DEFAULT_USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:32.0)\
@@ -13,12 +14,13 @@ DEFAULT_REFERER = 'http://i.vod.xunlei.com/resource_assistant'
 
 class XunLei(object):
 
-    def __init__(
-            self,
-            username=None,
-            password=None,
-            user_agent=DEFAULT_USER_AGENT,
-            referer=DEFAULT_REFERER):
+    def __init__(self,
+                 username=None,
+                 password=None,
+                 user_agent=DEFAULT_USER_AGENT,
+                 referer=DEFAULT_REFERER,
+                 rk_username=None,
+                 rk_password=None):
 
         self.username = username
         self.password = password
@@ -29,9 +31,29 @@ class XunLei(object):
         self.is_login = False
         self.session_id = None
         self.lsession_id = None
+        if rk_password and rk_password:
+            self.rk_client = RClient(rk_username, rk_password)
+        else:
+            self.rk_client = None
 
     def _current_timestamp(self):
         return int(time() * 1000)
+
+    def _crack_verify_code(self):
+        url = 'http://verify2.xunlei.com/image?t=MVA&cachetime=%s' % self._current_timestamp()
+        r = self.get(url, stream=True)
+        if r.status_code == 200:
+            image = r.content
+            if self.rk_client:
+                verify_code = self.rk_client.rk_create(image, 3040)
+            else:
+                print ('need login ruokuai account')
+                return None
+        else:
+            print ('get verify code error')
+            return None
+
+        return verify_code
 
     def login(self):
         login_url = 'http://login.xunlei.com/sec2login/'
@@ -52,7 +74,9 @@ class XunLei(object):
                 break
             else:
                 print ('verify_code:', r.cookies.get('check_result', ''))
-                verify_code = ''
+                verify_code = self._crack_verify_code()
+                if verify_code:
+                    break
                 try_time += 1
                 sleep(10)
 
