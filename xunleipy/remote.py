@@ -24,8 +24,14 @@ class ListType:
 
 class XunLeiRemote(XunLei):
 
-    def __init__(self, username, password):
-        super(XunLeiRemote, self).__init__(username, password)
+    def __init__(self,
+                 username,
+                 password,
+                 rk_username=None,
+                 rk_password=None):
+        super(XunLeiRemote, self).__init__(
+            username, password, rk_username, rk_password
+        )
         if not self.is_login:
             self.login()
         self.pid = ''

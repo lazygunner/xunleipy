@@ -9,8 +9,9 @@ VOD_BASE_URL = 'http://i.vod.xunlei.com/'
 
 class XunLeiVod(XunLei):
 
-    def __init__(self, username, password):
-        super(XunLeiVod, self).__init__(username, password)
+    def __init__(self, username, password, rk_username=None, rk_password=None):
+        super(XunLeiVod, self).__init__(
+            username, password, rk_username, rk_password)
         if not self.is_login:
             self.login()
 
