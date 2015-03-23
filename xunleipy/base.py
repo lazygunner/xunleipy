@@ -17,10 +17,10 @@ class XunLei(object):
     def __init__(self,
                  username=None,
                  password=None,
-                 user_agent=DEFAULT_USER_AGENT,
-                 referer=DEFAULT_REFERER,
                  rk_username=None,
-                 rk_password=None):
+                 rk_password=None,
+                 user_agent=DEFAULT_USER_AGENT,
+                 referer=DEFAULT_REFERER):
 
         self.username = username
         self.password = password
@@ -31,7 +31,7 @@ class XunLei(object):
         self.is_login = False
         self.session_id = None
         self.lsession_id = None
-        if rk_password and rk_password:
+        if rk_username and rk_password:
             self.rk_client = RClient(rk_username, rk_password)
         else:
             self.rk_client = None
