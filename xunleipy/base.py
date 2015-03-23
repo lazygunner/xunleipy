@@ -41,7 +41,7 @@ class XunLei(object):
 
     def _crack_verify_code(self):
         url = 'http://verify2.xunlei.com/image?t=MVA&cachetime=%s' % self._current_timestamp()
-        r = self.get(url, stream=True)
+        r = self.session.get(url, stream=True)
         if r.status_code == 200:
             image = r.content
             if self.rk_client:
