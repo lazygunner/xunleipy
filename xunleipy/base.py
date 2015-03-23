@@ -45,7 +45,12 @@ class XunLei(object):
         if r.status_code == 200:
             image = r.content
             if self.rk_client:
-                verify_code = self.rk_client.rk_create(image, 3040)
+                verify_code_dict = self.rk_client.rk_create(image, 3040)
+                if verify_code_dict:
+                    verify_code = verify_code_dict.get('Result', '')
+                else:
+                    print ('rk failed ', verify_code_dict)
+                    return None
             else:
                 print ('need login ruokuai account')
                 return None
