@@ -66,10 +66,10 @@ class XunLei(object):
         username = self.username
         try_time = 0
         while try_time < 3:
-            check_url = 'http://login.xunlei.com/check?u=%s&cachetime=%d'
+            check_url = 'http://login.xunlei.com/check?u=%s&cachetime=%d&business_type=%d'
             # get verify_code from check url
             cache_time = self._current_timestamp()
-            check_url = check_url % (username, cache_time)
+            check_url = check_url % (username, cache_time, 113)
             r = self.session.get(check_url)
 
             # check_result is like '0:!kuv', but we auctually only need '!kuv'
