@@ -103,8 +103,8 @@ class XunLei(object):
                 break
             except ConnectionError:
                 try_count += 1
-                print 'Connection error. retry ' + str(try_count) + ' time...'
-                sleep(2)
+                print ('Connection error. retry ' + str(try_count))
+                sleep(3)
 
         user_id = rsp.cookies.get('userid')
         if user_id:
