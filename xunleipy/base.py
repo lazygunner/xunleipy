@@ -2,6 +2,7 @@ from __future__ import absolute_import, unicode_literals
 from time import time, sleep
 
 import requests
+from requests.exceptions import ConnectionError
 
 from .utils import get_password_hash
 from .rk import RClient
@@ -69,7 +70,7 @@ class XunLei(object):
             check_url = 'http://login.xunlei.com/check?u=%s&cachetime=%d&business_type=%d'
             # get verify_code from check url
             cache_time = self._current_timestamp()
-            check_url = check_url % (username, cache_time, 113)
+            check_url = check_url % (username, cache_time, 108)
             r = self.session.get(check_url)
 
             # check_result is like '0:!kuv', but we auctually only need '!kuv'
@@ -93,9 +94,19 @@ class XunLei(object):
             'p': password_hash,
             'verifycode': verify_code
         }
-        r = self.session.post(login_url, data=data)
 
-        user_id = r.cookies.get('userid')
+        try_count = 0
+
+        while try_count < 3:
+            try:
+                rsp = self.session.post(login_url, data=data)
+                break
+            except ConnectionError:
+                try_count += 1
+                print 'Connection error. retry ' + str(try_count) + ' time...'
+                sleep(2)
+
+        user_id = rsp.cookies.get('userid')
         if user_id:
             # login success
             self.user_id = user_id
