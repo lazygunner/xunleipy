@@ -3,9 +3,10 @@ from time import time, sleep
 
 import requests
 from requests.exceptions import ConnectionError
+from six.moves.urllib.parse import unquote
 
-from .utils import get_password_hash
 from .rk import RClient
+from .rsa_lib import rsa_encrypt_password
 
 
 DEFAULT_USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:32.0)\
@@ -65,13 +66,18 @@ class XunLei(object):
         login_url = 'http://login.xunlei.com/sec2login/'
 
         username = self.username
+        business_type = 113
         try_time = 0
         while try_time < 3:
-            check_url = 'http://login.xunlei.com/check?u=%s&cachetime=%d&business_type=%d'
+            check_url = 'http://login.xunlei.com/check?u=%s&cachetime=%d&business_type=%s'
             # get verify_code from check url
             cache_time = self._current_timestamp()
-            check_url = check_url % (username, cache_time, 108)
+            check_url = check_url % (username, cache_time, business_type)
             r = self.session.get(check_url)
+
+            # get n, e for RSA encryption
+            check_n = unquote(r.cookies.get('check_n', ''))
+            check_e = r.cookies.get('check_e', '')
 
             # check_result is like '0:!kuv', but we auctually only need '!kuv'
             verify_code_tmp = r.cookies.get('check_result', '').split(':')
@@ -86,13 +92,18 @@ class XunLei(object):
                 try_time += 1
                 sleep(10)
 
-        password_hash = get_password_hash(self.password, verify_code)
+        encrypted_password = rsa_encrypt_password(
+            self.password, verify_code, check_n, check_e
+        )
         data = {
-            'login_enable': 1,
-            'login_hour': 720,
+            'login_enable': 0,
             'u': username,
-            'p': password_hash,
-            'verifycode': verify_code
+            'p': encrypted_password,
+            'n': check_n,
+            'e': check_e,
+            'verifycode': verify_code,
+            'business_type': business_type,
+            'v': 100,
         }
 
         try_count = 0
@@ -105,7 +116,6 @@ class XunLei(object):
                 try_count += 1
                 print ('Connection error. retry ' + str(try_count))
                 sleep(3)
-
         user_id = rsp.cookies.get('userid')
         if user_id:
             # login success

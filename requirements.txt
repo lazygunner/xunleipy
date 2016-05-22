@@ -1,2 +1,6 @@
+Js2Py==0.35
+pytz==2016.4
 requests==2.4.1
-six==1.8.0
+six==1.10.0
+twine==1.6.5
+tzlocal==1.2.2
