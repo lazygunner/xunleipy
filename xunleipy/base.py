@@ -88,6 +88,11 @@ class XunLei(object):
             check_n = unquote(r.cookies.get('check_n', ''))
             check_e = r.cookies.get('check_e', '')
 
+            if not check_n:
+                print ('check_n is None')
+                try_time += 1
+                continue
+
             # check_result is like '0:!kuv', but we auctually only need '!kuv'
             verify_code_tmp = r.cookies.get('check_result', '').split(':')
             if len(verify_code_tmp) == 2 and verify_code_tmp[0] == '0':
