@@ -73,7 +73,16 @@ class XunLei(object):
             # get verify_code from check url
             cache_time = self._current_timestamp()
             check_url = check_url % (username, cache_time, business_type)
-            r = self.session.get(check_url)
+            try_count = 0
+
+            while try_count < 3:
+                try:
+                    r = self.session.get(check_url)
+                    break
+                except ConnectionError:
+                    try_count += 1
+                    print ('Connection error. retry ' + str(try_count))
+                    sleep(3)
 
             # get n, e for RSA encryption
             check_n = unquote(r.cookies.get('check_n', ''))
