@@ -68,10 +68,13 @@ class XunLei(object):
         username = self.username
         business_type = 113
         try_time = 0
+
+        cache_time = self._current_timestamp()
+        verify_code = '----'
         while try_time < 3:
+            sleep(3)
             check_url = 'http://login.xunlei.com/check?u=%s&cachetime=%d&business_type=%s'
             # get verify_code from check url
-            cache_time = self._current_timestamp()
             check_url = check_url % (username, cache_time, business_type)
             try_count = 0
 
