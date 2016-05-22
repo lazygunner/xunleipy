@@ -9,7 +9,7 @@ def xunlei_mock(url, request):
     headers = {}
     if url.path == '/check':
         headers = {
-            'Set-Cookie': 'check_result=0:!tst;'
+            'Set-Cookie': 'check_result=0:!tst;check_n=asdf;check_e=asd'
         }
     elif url.path == '/sec2login/':
         headers = {
