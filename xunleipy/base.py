@@ -87,6 +87,12 @@ class XunLei(object):
                     print ('Connection error. retry ' + str(try_count))
                     sleep(3)
 
+            if try_count == 0:
+                try_time += 1
+                print ('Get check code failed!')
+                sleep(10)
+                continue
+
             # get n, e for RSA encryption
             check_n = unquote(r.cookies.get('check_n', ''))
             check_e = r.cookies.get('check_e', '')
@@ -108,6 +114,10 @@ class XunLei(object):
                     break
                 try_time += 1
                 sleep(10)
+
+        if try_time == 3:
+            print ('Get check_n failed!Login Failed')
+            return False
 
         encrypted_password = rsa_encrypt_password(
             self.password, verify_code, check_n, check_e
