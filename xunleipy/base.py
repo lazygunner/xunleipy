@@ -63,7 +63,7 @@ class XunLei(object):
         return verify_code
 
     def login(self):
-        login_url = 'http://login.xunlei.com/sec2login/'
+        login_url = 'https://login3.xunlei.com/sec2login/'
 
         username = self.username
         business_type = 113
@@ -87,7 +87,7 @@ class XunLei(object):
                     print ('Connection error. retry ' + str(try_count))
                     sleep(3)
 
-            if try_count == 0:
+            if try_count != 0:
                 try_time += 1
                 print ('Get check code failed!')
                 sleep(10)
@@ -96,11 +96,6 @@ class XunLei(object):
             # get n, e for RSA encryption
             check_n = unquote(r.cookies.get('check_n', ''))
             check_e = r.cookies.get('check_e', '')
-
-            if not check_n:
-                print ('check_n is None')
-                try_time += 1
-                continue
 
             # check_result is like '0:!kuv', but we auctually only need '!kuv'
             verify_code_tmp = r.cookies.get('check_result', '').split(':')
@@ -119,24 +114,32 @@ class XunLei(object):
             print ('Get check_n failed!Login Failed')
             return False
 
-        encrypted_password = rsa_encrypt_password(
-            self.password, verify_code, check_n, check_e
-        )
+        if check_n:
+            encrypted_password = rsa_encrypt_password(
+                self.password, verify_code, check_n, check_e
+            )
+        else:
+            encrypted_password = self.password
+
         data = {
-            'login_enable': 0,
+            'login_enable': '0',
             'u': username,
             'p': encrypted_password,
-            'n': check_n,
-            'e': check_e,
             'verifycode': verify_code,
             'business_type': business_type,
-            'v': 100,
+            'v': '101',
+            'cachetime': cache_time,
         }
+
+        if check_n:
+            data['n'] = check_n
+            data['e'] = check_e
 
         try_count = 0
 
         while try_count < 3:
             try:
+                self.session.headers['Content-Type'] = 'application/x-www-form-urlencoded'
                 rsp = self.session.post(login_url, data=data)
                 break
             except ConnectionError:
