@@ -87,7 +87,7 @@ class XunLei(object):
                     print ('Connection error. retry ' + str(try_count))
                     sleep(3)
 
-            if try_count != 0:
+            if try_count == 3:
                 try_time += 1
                 print ('Get check code failed!')
                 sleep(10)
