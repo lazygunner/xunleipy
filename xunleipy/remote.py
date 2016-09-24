@@ -28,9 +28,10 @@ class XunLeiRemote(XunLei):
                  username,
                  password,
                  rk_username=None,
-                 rk_password=None):
+                 rk_password=None,
+                 proxy=None):
         super(XunLeiRemote, self).__init__(
-            username, password, rk_username, rk_password
+            username, password, rk_username, rk_password, proxy
         )
         if not self.is_login:
             self.login()

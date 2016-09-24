@@ -22,7 +22,8 @@ class XunLei(object):
                  rk_username=None,
                  rk_password=None,
                  user_agent=DEFAULT_USER_AGENT,
-                 referer=DEFAULT_REFERER):
+                 referer=DEFAULT_REFERER,
+                 proxy=None):
 
         self.username = username
         self.password = password
@@ -37,6 +38,10 @@ class XunLei(object):
             self.rk_client = RClient(rk_username, rk_password)
         else:
             self.rk_client = None
+
+        if proxy:
+            self.proxies = {'http': proxy}
+            self.session.proxies = self.proxies
 
     def _current_timestamp(self):
         return int(time() * 1000)
