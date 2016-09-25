@@ -6,6 +6,7 @@ from xunleipy.remote import XunLeiRemote
 
 def remote_download(username, password, rk_username, rk_password, download_links, proxy=None, path='C:/TD/', peer=0):
     remote_client = XunLeiRemote(username, password, rk_username, rk_password, proxy=proxy)
+    remote_client.login()
     peer_list = remote_client.get_remote_peer_list()
     if len(peer_list) == 0:
         print 'No valid remote devices'

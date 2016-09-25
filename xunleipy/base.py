@@ -49,8 +49,19 @@ class XunLei(object):
         return int(time() * 1000)
 
     def _crack_verify_code(self):
-        url = 'http://verify2.xunlei.com/image?t=MVA&cachetime=%s' % self._current_timestamp()
-        r = self.session.get(url, stream=True)
+        url = 'http://verify1.xunlei.com/image?t=MVA&cachetime=%s' % self._current_timestamp()
+        try_count = 0
+        while try_count < 3:
+            try:
+                r = self.session.get(url, stream=True)
+                break
+            except ConnectionError:
+                try_count += 1
+                print ('Check url connection error. retry ' + str(try_count))
+                sleep(3)
+        if try_count == 3:
+            return None
+
         if r.status_code == 200:
             image = r.content
             if self.rk_client:
@@ -70,7 +81,8 @@ class XunLei(object):
         return verify_code
 
     def login(self):
-        login_url = 'https://login3.xunlei.com/sec2login/'
+        login_url = 'https://login2.xunlei.com/sec2login/'
+        login_url1 = 'https://login3.xunlei.com/sec2login/'
 
         username = self.username
         business_type = 113
@@ -148,6 +160,7 @@ class XunLei(object):
             try:
                 self.session.headers['Content-Type'] = 'application/x-www-form-urlencoded'
                 rsp = self.session.post(login_url, data=data)
+                rsp = self.session.post(login_url1, data=data)
                 break
             except ConnectionError:
                 try_count += 1
@@ -161,6 +174,8 @@ class XunLei(object):
         else:
             # login failed
             print ('login failed')
+            if 'limit' in rsp.content:
+                print ('ip limit! change ip')
             pass
 
         return self.is_login
