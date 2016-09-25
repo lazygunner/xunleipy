@@ -12,6 +12,7 @@ from .rsa_lib import rsa_encrypt_password
 DEFAULT_USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:32.0)\
     Gecko/20100101 Firefox/32.0'
 DEFAULT_REFERER = 'http://i.vod.xunlei.com/resource_assistant'
+XUNLEI_LOGIN_VERSION = '101'
 
 
 class XunLei(object):
@@ -34,6 +35,7 @@ class XunLei(object):
         self.is_login = False
         self.session_id = None
         self.lsession_id = None
+        self.v = XUNLEI_LOGIN_VERSION
         if rk_username and rk_password:
             self.rk_client = RClient(rk_username, rk_password)
         else:
@@ -78,9 +80,9 @@ class XunLei(object):
         verify_code = '----'
         while try_time < 3:
             sleep(3)
-            check_url = 'http://login.xunlei.com/check?u=%s&cachetime=%d&business_type=%s'
+            check_url = 'https://login.xunlei.com/check?u=%s&cachetime=%d&business_type=%s&v=%s'
             # get verify_code from check url
-            check_url = check_url % (username, cache_time, business_type)
+            check_url = check_url % (username, cache_time, business_type, self.v)
             try_count = 0
 
             while try_count < 3:
@@ -132,7 +134,7 @@ class XunLei(object):
             'p': encrypted_password,
             'verifycode': verify_code,
             'business_type': business_type,
-            'v': '101',
+            'v': self.v,
             'cachetime': cache_time,
         }
 
