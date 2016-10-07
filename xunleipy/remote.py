@@ -42,12 +42,13 @@ class XunLeiRemote(XunLei):
 
         if 'params' not in kwargs:
             kwargs['params'] = {}
-        if 'data' not in kwargs:
-            kwargs['data'] = {}
-        if isinstance(kwargs['data'], dict):
-            data = json.dumps(kwargs['data'], ensure_ascii=False)
-            data = data.encode('utf-8')
-            kwargs['data'] = data
+        if method == 'post':
+            if 'data' not in kwargs:
+                kwargs['data'] = {}
+            if isinstance(kwargs['data'], dict):
+                data = json.dumps(kwargs['data'], ensure_ascii=False)
+                data = data.encode('utf-8')
+                kwargs['data'] = data
 
         result = self.session.request(
             method=method,
