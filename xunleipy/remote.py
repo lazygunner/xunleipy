@@ -33,8 +33,6 @@ class XunLeiRemote(XunLei):
         super(XunLeiRemote, self).__init__(
             username, password, rk_username, rk_password, proxy=proxy
         )
-        if not self.is_login:
-            self.login()
         self.pid = ''
 
     def _request(self, method, url, **kwargs):
