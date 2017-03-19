@@ -16,7 +16,7 @@ DEFAULT_REFERER = 'http://i.xunlei.com/login/?r_d=1&use_cdn=0&timestamp=' + str(
 XUNLEI_LOGIN_VERSION = 101
 DEVICE_ID = 'wdi10.c9b1132a641dc557242aecc6f21fcc20d902f3b01972e9ff8e8529c782188bb7'
 
-FP_RAW = "TW96aWxsYS81LjAgKE1hY2ludG9zaDsgSW50ZWwgTWFjIE9TIFggMTBfMTJfMSkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzU2LjAuMjkyNC44NyBTYWZhcmkvNTM3LjM2IyMjemgtQ04jIyMyNCMjIzEwODB4MTkyMCMjIy00ODAjIyN0cnVlIyMjdHJ1ZSMjI3RydWUjIyN1bmRlZmluZWQjIyNmdW5jdGlvbiMjIyMjI01hY0ludGVsIyMjIyMjV2lkZXZpbmUgQ29udGVudCBEZWNyeXB0aW9uIE1vZHVsZTo6RW5hYmxlcyBXaWRldmluZSBsaWNlbnNlcyBmb3IgcGxheWJhY2sgb2YgSFRNTCBhdWRpby92aWRlbyBjb250ZW50LiAodmVyc2lvbjogMS40LjguOTYyKTo6YXBwbGljYXRpb24veC1wcGFwaS13aWRldmluZS1jZG1+O1Nob2Nrd2F2ZSBGbGFzaDo6U2hvY2t3YXZlIEZsYXNoIDI0LjAgcjA6OmFwcGxpY2F0aW9uL3gtc2hvY2t3YXZlLWZsYXNofnN3ZixhcHBsaWNhdGlvbi9mdXR1cmVzcGxhc2h+c3BsO0Nocm9tZSBQREYgVmlld2VyOjo6OmFwcGxpY2F0aW9uL3BkZn5wZGY7TmF0aXZlIENsaWVudDo6OjphcHBsaWNhdGlvbi94LW5hY2x+LGFwcGxpY2F0aW9uL3gtcG5hY2x+O0Nocm9tZSBQREYgVmlld2VyOjpQb3J0YWJsZSBEb2N1bWVudCBGb3JtYXQ6OmFwcGxpY2F0aW9uL3gtZ29vZ2xlLWNocm9tZS1wZGZ+cGRmIyMjZjM1MjFkMTc1MWQ0NDQyYWRiNDU3MWY4Mjc4MGRhYWE="
+FP_RAW = "TW96aWxsYS81LjAgKE1hY2ludG9zaDsgSW50ZWwgTWFjIE9TIFggMTBfMTJfMykgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzU2LjAuMjkyNC44NyBTYWZhcmkvNTM3LjM2IyMjemgtQ04jIyMyNCMjIzkwMHgxNDQwIyMjLTQ4MCMjI3RydWUjIyN0cnVlIyMjdHJ1ZSMjI3VuZGVmaW5lZCMjI2Z1bmN0aW9uIyMjIyMjTWFjSW50ZWwjIyMjIyNTaG9ja3dhdmUgRmxhc2g6OlNob2Nrd2F2ZSBGbGFzaCAyNS4wIHIwOjphcHBsaWNhdGlvbi94LXNob2Nrd2F2ZS1mbGFzaH5zd2YsYXBwbGljYXRpb24vZnV0dXJlc3BsYXNofnNwbDtOYXRpdmUgQ2xpZW50Ojo6OmFwcGxpY2F0aW9uL3gtbmFjbH4sYXBwbGljYXRpb24veC1wbmFjbH4sYXBwbGljYXRpb24veC1wcGFwaS12eXNvcn47V2lkZXZpbmUgQ29udGVudCBEZWNyeXB0aW9uIE1vZHVsZTo6RW5hYmxlcyBXaWRldmluZSBsaWNlbnNlcyBmb3IgcGxheWJhY2sgb2YgSFRNTCBhdWRpby92aWRlbyBjb250ZW50LiAodmVyc2lvbjogMS40LjguOTYyKTo6YXBwbGljYXRpb24veC1wcGFwaS13aWRldmluZS1jZG1+O0Nocm9tZSBQREYgVmlld2VyOjo6OmFwcGxpY2F0aW9uL3BkZn5wZGY7Q2hyb21lIFBERiBWaWV3ZXI6OlBvcnRhYmxlIERvY3VtZW50IEZvcm1hdDo6YXBwbGljYXRpb24veC1nb29nbGUtY2hyb21lLXBkZn5wZGYjIyNmMzUyMWQxNzUxZDQ0NDJhZGI0NTcxZjgyNzgwZGFhYQ=="
 
 
 class XunLei(object):
@@ -98,7 +98,7 @@ class XunLei(object):
 
     def _get_signed_fp(self, fp):
         # hack
-        return "1ef67f4e4267cb8ef6a5984bdb36b889"
+        return "12a2d98994cc54bc38cc26a68db150ec"
 
     def _get_device_id(self):
         fp = _md5(FP_RAW)
@@ -107,8 +107,8 @@ class XunLei(object):
             'https://login.xunlei.com/risk?cmd=report',
             data={
                 'xl_fp_raw': FP_RAW,
-                'xl_fp': '8b209c252485d38cf73ed260d9aa5ed6',
-                'xl_fp_sign': '1ef67f4e4267cb8ef6a5984bdb36b889',
+                'xl_fp': fp,
+                'xl_fp_sign': fp_sign,
                 'cachetime': self._current_timestamp() * 1000
             }
         )
