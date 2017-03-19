@@ -8,6 +8,7 @@ from six.moves.urllib.parse import unquote
 from .rk import RClient
 from .rsa_lib import rsa_encrypt_password
 from .utils import _md5
+from .fp import fp_sign
 
 
 DEFAULT_USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:32.0)\
@@ -96,13 +97,13 @@ class XunLei(object):
     def _get_csrf_token(self, device_id):
         return _md5(device_id[:32])
 
-    def _get_signed_fp(self, fp):
-        # hack
-        return "12a2d98994cc54bc38cc26a68db150ec"
+    def _get_signed_fp(self, fp_raw):
+        return fp_sign(fp_raw)
 
     def _get_device_id(self):
         fp = _md5(FP_RAW)
-        fp_sign = self._get_signed_fp(fp)
+        fp_sign = self._get_signed_fp(FP_RAW)
+        import pdb;pdb.set_trace()
         rsp = self.session.post(
             'https://login.xunlei.com/risk?cmd=report',
             data={
