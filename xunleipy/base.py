@@ -140,7 +140,6 @@ class XunLei(object):
             return False
 
     def login(self):
-        import pdb;pdb.set_trace()
         if self.check_login():
             # login success
             self.is_login = True
