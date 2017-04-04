@@ -1,4 +1,5 @@
 from __future__ import absolute_import, unicode_literals
+import os
 from time import time, sleep
 
 import requests
@@ -8,16 +9,13 @@ from six.moves.urllib.parse import unquote
 from .rk import RClient
 from .rsa_lib import rsa_encrypt_password
 from .utils import _md5
-from .fp import fp_sign
+from .fp import get_fp_raw, get_fp_sign
 
 
 DEFAULT_USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:32.0)\
     Gecko/20100101 Firefox/32.0'
 DEFAULT_REFERER = 'http://i.xunlei.com/login/?r_d=1&use_cdn=0&timestamp=' + str(time() * 1000) + '&refurl=http%3A%2F%2Fyuancheng.xunlei.com%2Flogin.html'
 XUNLEI_LOGIN_VERSION = 101
-DEVICE_ID = 'wdi10.c9b1132a641dc557242aecc6f21fcc20d902f3b01972e9ff8e8529c782188bb7'
-
-FP_RAW = "TW96aWxsYS81LjAgKE1hY2ludG9zaDsgSW50ZWwgTWFjIE9TIFggMTBfMTJfMykgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzU2LjAuMjkyNC44NyBTYWZhcmkvNTM3LjM2IyMjemgtQ04jIyMyNCMjIzkwMHgxNDQwIyMjLTQ4MCMjI3RydWUjIyN0cnVlIyMjdHJ1ZSMjI3VuZGVmaW5lZCMjI2Z1bmN0aW9uIyMjIyMjTWFjSW50ZWwjIyMjIyNTaG9ja3dhdmUgRmxhc2g6OlNob2Nrd2F2ZSBGbGFzaCAyNS4wIHIwOjphcHBsaWNhdGlvbi94LXNob2Nrd2F2ZS1mbGFzaH5zd2YsYXBwbGljYXRpb24vZnV0dXJlc3BsYXNofnNwbDtOYXRpdmUgQ2xpZW50Ojo6OmFwcGxpY2F0aW9uL3gtbmFjbH4sYXBwbGljYXRpb24veC1wbmFjbH4sYXBwbGljYXRpb24veC1wcGFwaS12eXNvcn47V2lkZXZpbmUgQ29udGVudCBEZWNyeXB0aW9uIE1vZHVsZTo6RW5hYmxlcyBXaWRldmluZSBsaWNlbnNlcyBmb3IgcGxheWJhY2sgb2YgSFRNTCBhdWRpby92aWRlbyBjb250ZW50LiAodmVyc2lvbjogMS40LjguOTYyKTo6YXBwbGljYXRpb24veC1wcGFwaS13aWRldmluZS1jZG1+O0Nocm9tZSBQREYgVmlld2VyOjo6OmFwcGxpY2F0aW9uL3BkZn5wZGY7Q2hyb21lIFBERiBWaWV3ZXI6OlBvcnRhYmxlIERvY3VtZW50IEZvcm1hdDo6YXBwbGljYXRpb24veC1nb29nbGUtY2hyb21lLXBkZn5wZGYjIyNmMzUyMWQxNzUxZDQ0NDJhZGI0NTcxZjgyNzgwZGFhYQ=="
 
 
 class XunLei(object):
@@ -97,17 +95,14 @@ class XunLei(object):
     def _get_csrf_token(self, device_id):
         return _md5(device_id[:32])
 
-    def _get_signed_fp(self, fp_raw):
-        return fp_sign(fp_raw)
-
     def _get_device_id(self):
-        fp = _md5(FP_RAW)
-        fp_sign = self._get_signed_fp(FP_RAW)
-        import pdb;pdb.set_trace()
+        fp_raw = get_fp_raw()
+        fp = _md5(fp_raw)
+        fp_sign = get_fp_sign(fp_raw)
         rsp = self.session.post(
             'https://login.xunlei.com/risk?cmd=report',
             data={
-                'xl_fp_raw': FP_RAW,
+                'xl_fp_raw': fp_raw,
                 'xl_fp': fp,
                 'xl_fp_sign': fp_sign,
                 'cachetime': self._current_timestamp() * 1000
@@ -118,7 +113,6 @@ class XunLei(object):
 
     def login(self):
         login_url = 'https://login.xunlei.com/sec2login/'
-        login_url1 = 'https://login3.xunlei.com/sec2login/'
 
         username = self.username
         business_type = "113"

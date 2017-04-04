@@ -1,7 +1,70 @@
 # -*- coding: utf-8 -*-
-import js2py
+import os
+import random
+import base64
 
-fp_sign = js2py.eval_js(
+import js2py
+from .utils import get_random_ua
+
+
+def __get_random_screen_resolution():
+    return random.choice([
+        '1080*1920',
+        '960*1620',
+        '800*600',
+        '540*720',
+    ])
+
+
+def _get_random_fp_raw():
+    '''
+        生成随机的原始指纹列表
+    '''
+    fp_list = []
+    fp_list.append(get_random_ua())  # ua
+    fp_list.append('zh-CN')  # language
+    fp_list.append('24')  # color depth
+    fp_list.append(__get_random_screen_resolution())
+    fp_list.append('-480')  # time zone offsite
+    fp_list.append('true')  # session storage
+    fp_list.append('true')  # local storage
+    fp_list.append('true')  # indexed db
+    fp_list.append('')  # add behavior
+    fp_list.append('function')  # open database
+    fp_list.append('')  # cpu class
+    fp_list.append('MacIntel')  # platform
+    fp_list.append('')  # do not track
+    fp_list.append(
+        'Widevine Content Decryption Module::Enables Widevine \
+        licenses for playback of HTML audio/video content. \
+        (version: 1.4.8.962)::application/x-ppapi-widevine-cdm~;'
+    )  # plugin string
+
+    return fp_list
+
+
+def get_fp_raw():
+    '''
+        生成fp_raw_str
+    '''
+    fp_file_path = os.path.expanduser('~/.xunleipy_fp')
+    fp_list = []
+    with open(fp_file_path, 'r') as fp_file:
+        fp_str = fp_file.readline()
+        if len(fp_str) > 0:
+            fp_list = fp_str.split('###')
+
+    if len(fp_list) < 14:
+        fp_list = _get_random_fp_raw()
+        fp_str = '###'.join(fp_list)
+        with open(fp_file_path, 'w') as fp_file:
+            fp_file.write(fp_str)
+
+    fp_raw = base64.b64encode(fp_str.strip())
+    return fp_raw
+
+
+get_fp_sign = js2py.eval_js(
     '''
     function xl_al(xl) {
     function i(a, b) {
@@ -122,8 +185,6 @@ fp_sign = js2py.eval_js(
       , xc = xa + xl;
     return t(i(r(xc), xc.length * c))
 }
+
 '''
 )
-
-if __name__ == '__main__':
-    print fp_sign("TW96aWxsYS81LjAgKE1hY2ludG9zaDsgSW50ZWwgTWFjIE9TIFggMTBfMTJfMykgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzU2LjAuMjkyNC44NyBTYWZhcmkvNTM3LjM2IyMjemgtQ04jIyMyNCMjIzkwMHgxNDQwIyMjLTQ4MCMjI3RydWUjIyN0cnVlIyMjdHJ1ZSMjI3VuZGVmaW5lZCMjI2Z1bmN0aW9uIyMjIyMjTWFjSW50ZWwjIyMjIyNTaG9ja3dhdmUgRmxhc2g6OlNob2Nrd2F2ZSBGbGFzaCAyNS4wIHIwOjphcHBsaWNhdGlvbi94LXNob2Nrd2F2ZS1mbGFzaH5zd2YsYXBwbGljYXRpb24vZnV0dXJlc3BsYXNofnNwbDtOYXRpdmUgQ2xpZW50Ojo6OmFwcGxpY2F0aW9uL3gtbmFjbH4sYXBwbGljYXRpb24veC1wbmFjbH4sYXBwbGljYXRpb24veC1wcGFwaS12eXNvcn47V2lkZXZpbmUgQ29udGVudCBEZWNyeXB0aW9uIE1vZHVsZTo6RW5hYmxlcyBXaWRldmluZSBsaWNlbnNlcyBmb3IgcGxheWJhY2sgb2YgSFRNTCBhdWRpby92aWRlbyBjb250ZW50LiAodmVyc2lvbjogMS40LjguOTYyKTo6YXBwbGljYXRpb24veC1wcGFwaS13aWRldmluZS1jZG1+O0Nocm9tZSBQREYgVmlld2VyOjo6OmFwcGxpY2F0aW9uL3BkZn5wZGY7Q2hyb21lIFBERiBWaWV3ZXI6OlBvcnRhYmxlIERvY3VtZW50IEZvcm1hdDo6YXBwbGljYXRpb24veC1nb29nbGUtY2hyb21lLXBkZn5wZGYjIyNmMzUyMWQxNzUxZDQ0NDJhZGI0NTcxZjgyNzgwZGFhYQ==")
