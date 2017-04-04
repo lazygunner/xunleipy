@@ -49,10 +49,13 @@ def get_fp_raw():
     '''
     fp_file_path = os.path.expanduser('~/.xunleipy_fp')
     fp_list = []
-    with open(fp_file_path, 'r') as fp_file:
-        fp_str = fp_file.readline()
-        if len(fp_str) > 0:
-            fp_list = fp_str.split('###')
+    try:
+        with open(fp_file_path, 'r') as fp_file:
+            fp_str = fp_file.readline()
+            if len(fp_str) > 0:
+                fp_list = fp_str.split('###')
+    except IOError:
+        pass
 
     if len(fp_list) < 14:
         fp_list = _get_random_fp_raw()

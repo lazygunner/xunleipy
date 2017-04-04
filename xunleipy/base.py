@@ -51,7 +51,10 @@ class XunLei(object):
             self.session.proxies = self.proxies
 
         self.cookie_path = os.path.expanduser('~/.xunleipy.cookie')
-        self.session.cookies = self._load_cookies(self.cookie_path)
+        try:
+            self.session.cookies = self._load_cookies(self.cookie_path)
+        except IOError:
+            pass
 
     def _save_cookies(self, requets_cookiejar, filename):
         with open(filename, 'wb') as f:
@@ -122,7 +125,27 @@ class XunLei(object):
         device_id = rsp.cookies.get('deviceid')
         return device_id
 
+    def check_login(self):
+        check_login_url = 'http://hub.yuancheng.xunlei.com/check/vipcache'
+        try:
+            r = self.session.get(check_login_url)
+        except ConnectionError:
+            return False
+
+        result = r.json()
+        if result['rtn'] == 0:
+            self.user_id = result['userid']
+            return True
+        else:
+            return False
+
     def login(self):
+        import pdb;pdb.set_trace()
+        if self.check_login():
+            # login success
+            self.is_login = True
+            return True
+
         login_url = 'https://login.xunlei.com/sec2login/'
 
         username = self.username
