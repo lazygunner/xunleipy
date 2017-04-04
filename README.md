@@ -8,6 +8,13 @@ xunleipy
 3. 添加远程下载项目
 
 ### 远程下载使用方法
+0. 安装&引用 xunleipy
+```
+  pip install xunleipy
+```
+```
+  from xunleipy.remote import XunLeiRemote
+```
 1. 初始化迅雷远程对象
 ```
   remote_client = XunLeiRemote(username, password, rk_username, rk_password, proxy=proxy)
