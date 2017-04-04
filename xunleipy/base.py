@@ -1,5 +1,6 @@
 from __future__ import absolute_import, unicode_literals
 import os
+import pickle
 from time import time, sleep
 
 import requests
@@ -49,6 +50,17 @@ class XunLei(object):
             self.proxies = {'http': proxy}
             self.session.proxies = self.proxies
 
+        self.cookie_path = os.path.expanduser('~/.xunleipy.cookie')
+        self.session.cookies = self._load_cookies(self.cookie_path)
+
+    def _save_cookies(self, requets_cookiejar, filename):
+        with open(filename, 'wb') as f:
+            pickle.dump(requets_cookiejar, f)
+
+    def _load_cookies(self, filename):
+        with open(filename, 'rb') as f:
+            return pickle.load(f)
+
     def _current_timestamp(self):
         return int(time() * 1000)
 
@@ -59,7 +71,6 @@ class XunLei(object):
             try:
                 r = self.session.get(
                     url, stream=True, cookies={
-                #        'deviceid': DEVICE_ID,
                         '_x_t_': '0',
                     }
                 )
@@ -213,6 +224,7 @@ class XunLei(object):
             # login success
             self.user_id = user_id
             self.is_login = True
+            self._save_cookies(self.session.cookies, self.cookie_path)
             print ('login success')
         else:
             # login failed
