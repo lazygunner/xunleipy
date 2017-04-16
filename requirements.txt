@@ -1,4 +1,4 @@
-Js2Py==0.35
+Js2Py==0.44
 pytz==2016.4
 requests==2.4.1
 six==1.10.0
