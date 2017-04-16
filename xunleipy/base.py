@@ -227,14 +227,9 @@ class XunLei(object):
         while try_count < 3:
             try:
                 self.session.headers['Content-Type'] = 'application/x-www-form-urlencoded'
-#                rsp = self.session.post(login_url, data=data)
                 rsp = self.session.post(
                     login_url + '?csrf_token=' + self._get_csrf_token(device_id),
                     data=data,
-                    cookies={
-                        'accessmode': '10000',
-                        'verify_type': 'MVA'
-                    }
                 )
                 break
             except ConnectionError:
