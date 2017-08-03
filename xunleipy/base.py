@@ -133,7 +133,7 @@ class XunLei(object):
             return False
 
         result = r.json()
-        if result['rtn'] == 0:
+        if result.get('rtn', -1) == 0:
             self.user_id = result['userid']
             return True
         else:

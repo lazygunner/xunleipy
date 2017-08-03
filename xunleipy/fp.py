@@ -74,5 +74,11 @@ def get_fp_sign(fp_raw):
         'https://login.xunlei.com/risk?cmd=algorithm&t=' +
         str(time.time() * 1000)
     )
-    xl_al = js2py.eval_js(rsp.content)
-    return xl_al(fp_raw)
+    sign = ''
+    try:
+        xl_al = js2py.eval_js(rsp.content)
+        sign = xl_al(fp_raw)
+    except Exception as e:
+        print(e)
+
+    return sign
