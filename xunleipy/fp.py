@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import
 import os
 import random
 import base64
 import time
+import six
 
 import requests
 import js2py
@@ -65,7 +67,11 @@ def get_fp_raw():
         with open(fp_file_path, 'w') as fp_file:
             fp_file.write(fp_str)
 
-    fp_raw = base64.b64encode(fp_str.strip())
+    source = fp_str.strip()
+    if six.PY3:
+        source = source.encode('utf-8')
+
+    fp_raw = base64.b64encode(source)
     return fp_raw
 
 

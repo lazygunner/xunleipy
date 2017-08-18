@@ -15,6 +15,10 @@ def xunlei_mock(url, request):
         headers = {
             'Set-Cookie': 'userid=test1234;'
         }
+    elif url.path == '/risk':
+        headers = {
+            'Set-Cookie': 'deviceid=test1234;'
+        }
 
     content = {'message': 'test login'}
     return response(200, content, headers, None, 5, request)

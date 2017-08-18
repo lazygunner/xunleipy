@@ -1,7 +1,12 @@
+from __future__ import absolute_import, unicode_literals
+import six
+
 
 def _md5(s):
     import hashlib
-    return hashlib.md5(s.encode('utf-8')).hexdigest()
+    if type(s) != bytes:
+        s = s.encode('utf-8')
+    return hashlib.md5(s).hexdigest()
 
 
 def get_password_hash(password, verify_code):

@@ -158,6 +158,7 @@ class XunLei(object):
             device_id = self._get_device_id()
             if not device_id:
                 print ('device id is null')
+                try_time += 1
                 continue
 
             check_url = 'https://login.xunlei.com/check?u=%s&cachetime=%d&business_type=%s&v=%s&csrf_token=' + self._get_csrf_token(device_id)
