@@ -4,6 +4,7 @@ from httmock import urlmatch, HTTMock, response
 
 from xunleipy.base import XunLei
 
+
 @urlmatch(netloc=r'(.*\.)?xunlei\.com')
 def xunlei_mock(url, request):
     headers = {}
@@ -22,6 +23,7 @@ def xunlei_mock(url, request):
 
     content = {'message': 'test login'}
     return response(200, content, headers, None, 5, request)
+
 
 class LoginTest(unittest.TestCase):
     def test_login_success(self):
