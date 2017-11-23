@@ -6,6 +6,7 @@ from time import time, sleep
 import requests
 from requests.exceptions import ConnectionError
 from six.moves.urllib.parse import unquote
+import six
 
 from .rk import RClient
 from .rsa_lib import rsa_encrypt_password
@@ -58,7 +59,7 @@ class XunLei(object):
 
     def _save_cookies(self, requets_cookiejar, filename):
         with open(filename, 'wb') as f:
-            pickle.dump(requets_cookiejar, f)
+            pickle.dump(requets_cookiejar, f, protocol=2 if six.PY2 else 3)
 
     def _load_cookies(self, filename):
         with open(filename, 'rb') as f:
