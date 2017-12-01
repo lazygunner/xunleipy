@@ -62,8 +62,11 @@ class XunLei(object):
             pickle.dump(requets_cookiejar, f, protocol=2 if six.PY2 else 3)
 
     def _load_cookies(self, filename):
-        with open(filename, 'rb') as f:
-            return pickle.load(f)
+        try:
+            with open(filename, 'rb') as f:
+                return pickle.load(f)
+        except Exception as e:
+            return
 
     def _current_timestamp(self):
         return int(time() * 1000)
