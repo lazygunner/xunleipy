@@ -1,3 +1,4 @@
+httmock==1.2.6
 Js2Py==0.44
 pkginfo==1.4.1
 pluggy==0.6.0
