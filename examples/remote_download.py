@@ -3,9 +3,9 @@
 import sys
 import os
 
-from xunleipy.remote import XunLeiRemote
-
 sys.path.append('/Users/gunner/workspace/xunleipy')
+
+from xunleipy.remote import XunLeiRemote
 
 def remote_download(username,
                     password,

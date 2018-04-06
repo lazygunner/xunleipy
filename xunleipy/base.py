@@ -5,6 +5,7 @@ from time import time, sleep
 
 import requests
 from requests.exceptions import ConnectionError
+from requests.cookies import RequestsCookieJar
 from six.moves.urllib.parse import unquote
 import six
 
@@ -56,6 +57,9 @@ class XunLei(object):
             self.session.cookies = self._load_cookies(self.cookie_path)
         except IOError:
             pass
+
+        if self.session.cookies == None:
+            self.session.cookies = RequestsCookieJar()
 
     def _save_cookies(self, requets_cookiejar, filename):
         with open(filename, 'wb') as f:
