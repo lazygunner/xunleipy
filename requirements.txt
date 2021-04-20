@@ -2,7 +2,7 @@ httmock==1.2.6
 Js2Py==0.44
 pkginfo==1.4.1
 pluggy==0.6.0
-py==1.5.2
+py==1.10.0
 pyjsparser==2.5.2
 pytz==2016.4
 requests==2.20.0
